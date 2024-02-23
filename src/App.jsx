@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import Section from './components/Section'
-import Info from './components/info'
+import Info from './components/Info'
+import Education from './components/Education'
 import './App.css'
+import Employment from './components/Employment'
 
 function App() {
   const [,] = useState()
@@ -11,8 +13,12 @@ function App() {
     <Section>
       <Info />
     </Section>
-    <Section></Section>
-    <Section></Section>
+    <Section>
+      <Education />
+    </Section>
+    <Section>
+      <Employment />
+    </Section>
     </>
   )
 }
