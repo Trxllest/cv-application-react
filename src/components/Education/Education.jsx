@@ -5,13 +5,14 @@ function Education() {
   //States//////////////////////////////////////////
   const [eduList, setEduList] = useState([]);
   const [showForm, setShowForm] = useState(false); // showing the form?
-  const [eduToEdit, setEduToEdit] = useState(null); //
-  const [editEdu, setEditEdu] = useState(null);
+  const [eduToEdit, setEduToEdit] = useState(null); // what are we editing
+  const [editEdu, setEditEdu] = useState(null); // are we in edit mode
   ////////////////////////////////////////////////
 
   const handleCloseForm = () => {
     setShowForm(false);
     setEduToEdit(null); // Clear the education item being edited
+    setEditEdu(false);
   };
 
   function ShowEduPreview(props) {
@@ -26,17 +27,8 @@ function Education() {
 
     function handleEdit(education) {
       setShowForm(true);
+      setEditEdu(true);
       setEduToEdit(education); // Set the education item being edited
-    }
-
-    function handleSave(newEdu) {
-      // Update the education list with the edited education item
-      const updatedList = eduList.map((edu) =>
-        edu.eduId === newEdu.eduId ? newEdu : edu
-      );
-      setEduList(updatedList);
-      setShowForm(false); // Exit edit mode
-      setEduToEdit(null); // Clear the education item being edited
     }
 
     return (
@@ -56,10 +48,6 @@ function Education() {
     );
   }
 
-
-
-
-  
   if (showForm && editEdu) {
     // Render EduForm for editing if in edit mode
     return (
@@ -69,6 +57,7 @@ function Education() {
           setList={setEduList}
           initialData={eduToEdit} // Pass the data of the education item being edited
           onCloseForm={handleCloseForm}
+          inEditMode={true}
         />
       </div>
     );
@@ -85,8 +74,7 @@ function Education() {
     );
   }
   // Otherwise, render ShowEduPreview
-  return <ShowEduPreview list={eduList} />
-
+  return <ShowEduPreview list={eduList} />;
 }
 
 export default Education;
