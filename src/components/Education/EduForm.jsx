@@ -1,12 +1,19 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
-function EduForm({ prevList, setList, isSaved, setIsSaved }) {
-  const [newEdu, setNewEdu] = useState({
+function EduForm({
+  onCloseForm,
+  prevList,
+  setList,
+  initialData,
+  inEditMode = false
+}) {
+  const [newEdu, setNewEdu] = useState(inEditMode ? initialData : {
     school: "",
     eduTitle: "",
-    eduStart: null,
-    eduEnd: null,
-    eduId: "",
+    eduStart: "",
+    eduEnd: "",
+    eduId: crypto.randomUUID(),
   });
 
   let handleSchool = (e) => {
@@ -33,17 +40,20 @@ function EduForm({ prevList, setList, isSaved, setIsSaved }) {
       eduEnd: e.target.value,
     }));
   };
-  let handleID = async () => {
-    const updatedEduId = crypto.randomUUID();
-    console.log(`UUID is: ${updatedEduId}`);
-    setNewEdu((newEdu) => ({
-      ...newEdu,
-      eduId: updatedEduId,
-    }));
-    console.log(`Education saved \n ${JSON.stringify(newEdu)}`);
+
+  function handleSave(newEd) {
+    // Update the education list with the edited education item
+    const updatedList = prevList.map((edu) =>
+      edu.eduId === newEdu.eduId ? newEd : edu
+    );
+    setList(updatedList);
+  }
+
+  const clearForm = () => {
+    document.getElementById("education-form").reset();
   };
 
-  let saveEdu = async () => {
+  let saveEdu = () => {
     if (
       newEdu.school === "" ||
       newEdu.eduTitle === "" ||
@@ -62,22 +72,38 @@ function EduForm({ prevList, setList, isSaved, setIsSaved }) {
       return;
     }
 
-    await handleID();
-    setList([...prevList, newEdu]);
-    console.log(`Education saved \n ${JSON.stringify(newEdu)}`);
+    if (inEditMode) {
+      handleSave(newEdu)
+      console.log(`Education saved \n ${JSON.stringify(newEdu)}`);
+    } else {
+      setList([...prevList, newEdu]);
+      console.log(`Education added \n ${JSON.stringify(newEdu)}`);
+    }
+
+    
+
+    clearForm();
+    setNewEdu({
+      school: "",
+      eduTitle: "",
+      eduStart: null,
+      eduEnd: null,
+      eduId: crypto.randomUUID(),
+    });
+    onCloseForm(); // Close the form after saving or updating
   };
 
   return (
     <>
-      <form>
+      <form id="education-form">
         <label htmlFor="">School: </label>
-        <input type="text" onChange={handleSchool} />
+        <input type="text" onChange={handleSchool} value={newEdu.school}/>
         <label htmlFor="">Degree/Diploma: </label>
-        <input type="text" onChange={handleTitle} />
+        <input type="text" onChange={handleTitle} value={newEdu.eduTitle}/>
         <label htmlFor="">Start: </label>
-        <input type="date" onChange={handleStart} />
+        <input type="date" onChange={handleStart} value={newEdu.eduStart}/>
         <label htmlFor="">End: </label>
-        <input type="date" onChange={handleEnd} />
+        <input type="date" onChange={handleEnd} value={newEdu.eduEnd}/>
       </form>
       <button onClick={saveEdu}>Save</button>
     </>
