@@ -3,7 +3,7 @@ import Section from "./components/Section";
 import Info from "./components/Info";
 import Education from "./components/Education/Education";
 import "./App.css";
-import Employment from "./components/Employment";
+import WorkExperience from "./components/WorkExp/Work";
 
 function App() {
   const [,] = useState();
@@ -17,7 +17,7 @@ function App() {
         <Education />
       </Section>
       <Section>
-        <Employment />
+        <WorkExperience/>
       </Section>
     </>
   );
