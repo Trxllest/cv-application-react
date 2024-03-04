@@ -18,7 +18,7 @@ function WorkExperience() {
   function ShowExpPreview(props) {
 
     const deleteExp = (key) => {
-      const newList = expList.filter((exp) => exp.eduId !== key);
+      const newList = expList.filter((exp) => exp.expId !== key);
       return newList;
     };
 
