@@ -1,7 +1,7 @@
 import { useState } from "react";
 import WorkExperienceForm from "./WorkForm";
 
-function WorkExperience() {
+function WorkExperience({list = [], setList}) {
   //States//////////////////////////////////////////
   const [expList, setExpList] = useState([]);
   const [showForm, setShowForm] = useState(false); // showing the form?

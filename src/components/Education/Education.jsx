@@ -1,9 +1,9 @@
 import EduForm from "./EduForm";
 import { useState } from "react";
 
-function Education() {
+function Education({list=[], setList}) {
   //States//////////////////////////////////////////
-  const [eduList, setEduList] = useState([]);
+  const [eduList, setEduList] = useState(list);
   const [showForm, setShowForm] = useState(false); // showing the form?
   const [eduToEdit, setEduToEdit] = useState(null); // what are we editing
   const [editEdu, setEditEdu] = useState(null); // are we in edit mode

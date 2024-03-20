@@ -1,32 +1,33 @@
 import { useState } from "react";
 
-function Info() {
-  const [person, setPerson] = useState({
-    name: "John Doe",
-    email: "example@gmail.com",
-    phone: "123-456-7890",
-  });
+function Info({prevPerson, setNewPerson}) {
+  const [person, setPerson] = useState(prevPerson);
 
   const handleNameChange = (e) => {
+    const newName = e.target.value;
     setPerson((prevPerson) => ({
       ...prevPerson,
-      name: e.target.value
+      name: newName,
     }));
-    console.log('changed')
+    setNewPerson({ ...person, name: newName }); // Pass the updated person object
   };
 
   const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
     setPerson((prevPerson) => ({
       ...prevPerson,
-      email: e.target.value
+      email: newEmail,
     }));
+    setNewPerson({ ...person, email: newEmail }); // Pass the updated person object
   };
 
   const handlePhoneChange = (e) => {
+    const newPhone = e.target.value;
     setPerson((prevPerson) => ({
       ...prevPerson,
-      phone: e.target.value
+      phone: newPhone,
     }));
+    setNewPerson({ ...person, phone: newPhone }); // Pass the updated person object
   };
 
   return (
