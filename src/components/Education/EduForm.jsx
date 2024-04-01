@@ -5,16 +5,21 @@ function EduForm({
   onCloseForm,
   prevList,
   setList,
+  onAddEducation, // Receive onAddEducation function as prop
   initialData,
-  inEditMode = false
+  inEditMode = false,
 }) {
-  const [newEdu, setNewEdu] = useState(inEditMode ? initialData : {
-    school: "",
-    eduTitle: "",
-    eduStart: "",
-    eduEnd: "",
-    eduId: crypto.randomUUID(),
-  });
+  const [newEdu, setNewEdu] = useState(
+    inEditMode
+      ? initialData
+      : {
+          school: "",
+          eduTitle: "",
+          eduStart: "",
+          eduEnd: "",
+          eduId: crypto.randomUUID(),
+        }
+  );
 
   let handleSchool = (e) => {
     setNewEdu((newEdu) => ({
@@ -41,13 +46,17 @@ function EduForm({
     }));
   };
 
-  function handleSave(newEd) {
-    // Update the education list with the edited education item
-    const updatedList = prevList.map((edu) =>
-      edu.eduId === newEdu.eduId ? newEd : edu
-    );
-    setList(updatedList);
-  }
+
+  const handleSave = () => {
+    // Handle saving education
+    if (inEditMode) {
+      const updatedList = prevList.map((edu) =>
+      edu.eduId === newEdu.eduId ? newEdu : edu)
+      setList(updatedList);
+    } else {
+      onAddEducation(newEdu); // Call onAddEducation function to add new education
+    }
+  };
 
   const clearForm = () => {
     document.getElementById("education-form").reset();
@@ -72,15 +81,7 @@ function EduForm({
       return;
     }
 
-    if (inEditMode) {
-      handleSave(newEdu)
-      console.log(`Education saved \n ${JSON.stringify(newEdu)}`);
-    } else {
-      setList([...prevList, newEdu]);
-      console.log(`Education added \n ${JSON.stringify(newEdu)}`);
-    }
-
-    
+    handleSave();
 
     clearForm();
     setNewEdu({
@@ -97,13 +98,13 @@ function EduForm({
     <>
       <form id="education-form">
         <label htmlFor="">School: </label>
-        <input type="text" onChange={handleSchool} value={newEdu.school}/>
+        <input type="text" onChange={handleSchool} value={newEdu.school} />
         <label htmlFor="">Degree/Diploma: </label>
-        <input type="text" onChange={handleTitle} value={newEdu.eduTitle}/>
+        <input type="text" onChange={handleTitle} value={newEdu.eduTitle} />
         <label htmlFor="">Start: </label>
-        <input type="date" onChange={handleStart} value={newEdu.eduStart}/>
+        <input type="date" onChange={handleStart} value={newEdu.eduStart} />
         <label htmlFor="">End: </label>
-        <input type="date" onChange={handleEnd} value={newEdu.eduEnd}/>
+        <input type="date" onChange={handleEnd} value={newEdu.eduEnd} />
       </form>
       <button onClick={saveEdu}>Save</button>
     </>

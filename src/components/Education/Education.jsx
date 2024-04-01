@@ -1,9 +1,8 @@
 import EduForm from "./EduForm";
 import { useState } from "react";
 
-function Education({list=[], setList}) {
+function Education({list, setList}) {
   //States//////////////////////////////////////////
-  const [eduList, setEduList] = useState(list);
   const [showForm, setShowForm] = useState(false); // showing the form?
   const [eduToEdit, setEduToEdit] = useState(null); // what are we editing
   const [editEdu, setEditEdu] = useState(null); // are we in edit mode
@@ -15,14 +14,35 @@ function Education({list=[], setList}) {
     setEditEdu(false);
   };
 
+  
+  const handleAddEducation = (newEdu) => {
+    if (editEdu) {
+      // If in edit mode, find the index of the edited education entry
+      const index = list.findIndex((edu) => edu.eduId === newEdu.eduId);
+      if (index !== -1) {
+        // Create a copy of the education list
+        const updatedList = [...list];
+        // Replace the existing entry with the edited one
+        updatedList[index] = newEdu;
+        // Update the education list state
+        setList(updatedList);
+      }
+    } else {
+      // If not in edit mode, add the new education entry to the list
+      setList([...list, newEdu]);
+    }
+    handleCloseForm(); // Close the form after adding/editing education
+  };
+
   function ShowEduPreview(props) {
     const deleteEdu = (key) => {
-      const newList = eduList.filter((edu) => edu.eduId !== key);
+      const newList = list.filter((edu) => edu.eduId !== key);
       return newList;
     };
 
     const handleDelete = (eduId) => {
-      setEduList(deleteEdu(eduId));
+      const newEduList = deleteEdu(eduId);
+      setList(newEduList);
     };
 
     function handleEdit(education) {
@@ -53,8 +73,8 @@ function Education({list=[], setList}) {
     return (
       <div>
         <EduForm
-          prevList={eduList}
-          setList={setEduList}
+          prevList={list}
+          setList={setList}
           initialData={eduToEdit} // Pass the data of the education item being edited
           onCloseForm={handleCloseForm}
           inEditMode={true}
@@ -66,15 +86,16 @@ function Education({list=[], setList}) {
     return (
       <div>
         <EduForm
-          prevList={eduList}
-          setList={setEduList}
+          prevList={list}
+          setList={setList}
           onCloseForm={handleCloseForm}
+          onAddEducation={handleAddEducation} // Pass handleAddEducation function to EduForm
         />
       </div>
     );
   }
   // Otherwise, render ShowEduPreview
-  return <ShowEduPreview list={eduList} />;
+  return <ShowEduPreview list={list} />;
 }
 
 export default Education;
