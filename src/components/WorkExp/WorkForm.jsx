@@ -7,6 +7,7 @@ function WorkExperienceForm({
   onAddWork,
   initialData,
   inEditMode = false,
+  formCancel = null,
 }) {
   const [newExp, setNewExp] = useState(
     inEditMode
@@ -53,7 +54,6 @@ function WorkExperienceForm({
     };
 
     const handleSave = () => {
-      // Handle saving 
       if (inEditMode) {
         const updatedList = prevList.map((edu) =>
           edu.eduId === newExp.eduId ? newExp : edu
@@ -68,17 +68,18 @@ function WorkExperienceForm({
       document.getElementById("experience-form").reset();
     };
 
+   
     let saveExp = () => {
       if (
-        newExp.position === "" ||
+       ( newExp.position === "" ||
         newExp.company === "" ||
         !newExp.expStart ||
-        !newExp.expEnd
+        !newExp.expEnd) && !formCancel
       ) {
         alert("Missing Fields");
         return;
       }
-      if (newExp.expEnd < newExp.expStart) {
+      if ((newExp.expEnd < newExp.expStart) && !formCancel) {
         alert("End date must be after start date");
         setNewExp((newExp) => ({
           ...newExp,
@@ -87,7 +88,11 @@ function WorkExperienceForm({
         return;
       }
 
-      handleSave();
+      if (!formCancel) {
+        handleSave();
+      }
+
+      
 
       clearForm();
       setNewExp({
@@ -100,6 +105,12 @@ function WorkExperienceForm({
       });
       onCloseForm(); // Close the form after saving or updating
     };
+
+    const cancelEntry = () => {
+      formCancel = true;
+      saveExp();
+    };
+
 
     return (
       <>
@@ -116,6 +127,7 @@ function WorkExperienceForm({
           <input type="date" onChange={handleEnd} value={newExp.expEnd} />
         </form>
         <button onClick={saveExp}>Save</button>
+        <button onClick={cancelEntry}>Cancel</button>
       </>
     );
 
