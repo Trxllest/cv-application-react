@@ -7,7 +7,7 @@ function WorkExperienceForm({
   onAddWork,
   initialData,
   inEditMode = false,
-  formCancel = null,
+  formCancel = null
 }) {
   const [newExp, setNewExp] = useState(
     inEditMode
