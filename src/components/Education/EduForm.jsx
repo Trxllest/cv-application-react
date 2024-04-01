@@ -8,6 +8,7 @@ function EduForm({
   onAddEducation, // Receive onAddEducation function as prop
   initialData,
   inEditMode = false,
+  formCancel = null
 }) {
   const [newEdu, setNewEdu] = useState(
     inEditMode
@@ -46,12 +47,12 @@ function EduForm({
     }));
   };
 
-
   const handleSave = () => {
     // Handle saving education
     if (inEditMode) {
       const updatedList = prevList.map((edu) =>
-      edu.eduId === newEdu.eduId ? newEdu : edu)
+        edu.eduId === newEdu.eduId ? newEdu : edu
+      );
       setList(updatedList);
     } else {
       onAddEducation(newEdu); // Call onAddEducation function to add new education
@@ -64,15 +65,15 @@ function EduForm({
 
   let saveEdu = () => {
     if (
-      newEdu.school === "" ||
+      (newEdu.school === "" ||
       newEdu.eduTitle === "" ||
       !newEdu.eduStart ||
-      !newEdu.eduEnd
+      !newEdu.eduEnd) && !formCancel
     ) {
       alert("Missing Fields");
       return;
     }
-    if (newEdu.eduEnd < newEdu.eduStart) {
+    if (newEdu.eduEnd < newEdu.eduStart && !formCancel) {
       alert("End date must be after start date");
       setNewEdu((newEdu) => ({
         ...newEdu,
@@ -81,7 +82,9 @@ function EduForm({
       return;
     }
 
-    handleSave();
+    if (!formCancel) {
+      handleSave();
+    }
 
     clearForm();
     setNewEdu({
@@ -92,6 +95,11 @@ function EduForm({
       eduId: crypto.randomUUID(),
     });
     onCloseForm(); // Close the form after saving or updating
+  };
+
+  const cancelEntry = () => {
+    formCancel = true;
+    saveEdu();
   };
 
   return (
@@ -107,6 +115,7 @@ function EduForm({
         <input type="date" onChange={handleEnd} value={newEdu.eduEnd} />
       </form>
       <button onClick={saveEdu}>Save</button>
+      <button onClick={cancelEntry}>Cancel</button>
     </>
   );
 }
