@@ -4,6 +4,7 @@ function WorkExperienceForm({
   onCloseForm,
   prevList,
   setList,
+  onAddWork,
   initialData,
   inEditMode = false,
 }) {
@@ -51,13 +52,17 @@ function WorkExperienceForm({
       }));
     };
 
-    function handleSave(expToSave) {
-      // Update the exp list with the edited exp item
-      const updatedList = prevList.map((exp) =>
-        exp.expId === newExp.expId ? expToSave : exp
-      );
-      setList(updatedList);
-    }
+    const handleSave = () => {
+      // Handle saving 
+      if (inEditMode) {
+        const updatedList = prevList.map((edu) =>
+          edu.eduId === newExp.eduId ? newExp : edu
+        );
+        setList(updatedList);
+      } else {
+        onAddWork(newExp); // Call onAddWork function to add
+      }
+    };
 
     const clearForm = () => {
       document.getElementById("experience-form").reset();
@@ -82,13 +87,7 @@ function WorkExperienceForm({
         return;
       }
 
-      if (inEditMode) {
-        handleSave(newExp);
-        console.log(`Exp saved \n ${JSON.stringify(newExp)}`);
-      } else {
-        setList([...prevList, newExp]);
-        console.log(`Exp added \n ${JSON.stringify(newExp)}`);
-      }
+      handleSave();
 
       clearForm();
       setNewExp({

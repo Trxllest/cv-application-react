@@ -1,9 +1,8 @@
 import { useState } from "react";
 import WorkExperienceForm from "./WorkForm";
 
-function WorkExperience({list = [], setList}) {
+function WorkExperience({ list, setList }) {
   //States//////////////////////////////////////////
-  const [expList, setExpList] = useState([]);
   const [showForm, setShowForm] = useState(false); // showing the form?
   const [expToEdit, setExpToEdit] = useState(null); // what are we editing
   const [editExp, setEditExp] = useState(null); // are we in edit mode
@@ -12,18 +11,37 @@ function WorkExperience({list = [], setList}) {
   const handleCloseForm = () => {
     setShowForm(false);
     setExpToEdit(null);
-    setEditExp(false)
+    setEditExp(false);
+  };
+
+  const handleAddWork = (newWork) => {
+    if (editExp) {
+      // If in edit mode, find the index of the edited 
+      const index = list.findIndex((work) => work.expId === newWork.expId);
+      if (index !== -1) {
+        // Create a copy
+        const updatedList = [...list];
+        // Replace the existing entry with the edited one
+        updatedList[index] = newWork;
+        // Update the education list state
+        setList(updatedList);
+      }
+    } else {
+      
+      setList([...list, newWork]);
+    }
+    handleCloseForm(); // Close the form after adding/editing 
   };
 
   function ShowExpPreview(props) {
-
     const deleteExp = (key) => {
-      const newList = expList.filter((exp) => exp.expId !== key);
+      const newList = list.filter((exp) => exp.expId !== key);
       return newList;
     };
 
     const handleDelete = (expId) => {
-      setExpList(deleteExp(expId));
+      const newExp = deleteExp(expId);
+      setList(newExp);
     };
 
     function handleEdit(experience) {
@@ -31,7 +49,7 @@ function WorkExperience({list = [], setList}) {
       setEditExp(true);
       setExpToEdit(experience); // Set the experience item being edited
     }
-    
+
     return (
       <>
         {props.list.map((exp) => (
@@ -55,8 +73,8 @@ function WorkExperience({list = [], setList}) {
     return (
       <div>
         <WorkExperienceForm
-          prevList={expList}
-          setList={setExpList}
+          prevList={list}
+          setList={setList}
           initialData={expToEdit} // Pass the data of the exp item being edited
           onCloseForm={handleCloseForm}
           inEditMode={true}
@@ -68,25 +86,16 @@ function WorkExperience({list = [], setList}) {
     return (
       <div>
         <WorkExperienceForm
-          prevList={expList}
-          setList={setExpList}
+          prevList={list}
+          setList={setList}
           onCloseForm={handleCloseForm}
+          onAddWork={handleAddWork}
         />
       </div>
     );
   }
   // Otherwise, render ShowexpPreview
-  return <ShowExpPreview list={expList} />;
-
-
-
-
-
-
-
-
-
-
+  return <ShowExpPreview list={list} />;
 }
 
 export default WorkExperience;
